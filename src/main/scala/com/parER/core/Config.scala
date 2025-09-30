@@ -4,7 +4,7 @@ import java.io.File
 
 object Config {
 
-  val mainDir = System.getProperty("user.dir") + File.separator + "data" + File.separator
+  val mainDir = System.getProperty("user.dir") + File.separator + ".." + File.separator + ".." + File.separator + ".." + File.separator + ".." + File.separator + "data" + File.separator + "blocking" + File.separator + "pier" + File.separator
   val maxComparisons = 1e8
 
   var local = false

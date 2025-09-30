@@ -35,7 +35,7 @@ class ProgressiveCollectorSinkWithIncrCount(t0: Long, t1: Long, dp: AbstractDupl
           counter += comparisons.size
           //if (counter % 100 == 0)
           //  println(counter)
-          proColl.incrExecute(incrCount, comparisons)
+          proColl.executeAndSave(incrCount, comparisons)
           pull(in)
         }
 

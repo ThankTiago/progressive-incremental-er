@@ -1,4 +1,4 @@
-name := "Parallel Entity Resolution Framework"
+name := "Parallel Progressive Entity Resolution Framework"
 
 version := "0.1"
 

@@ -13,6 +13,7 @@ import org.scify.jedai.datamodel.EntityProfile
 import org.scify.jedai.datareader.entityreader.EntitySerializationReader
 import org.scify.jedai.datareader.groundtruthreader.GtSerializationReader
 import org.scify.jedai.textmodels.TokenNGrams
+import java.io.File
 
 import scala.concurrent.duration.FiniteDuration
 
@@ -60,21 +61,18 @@ object AkkaProgressiveIncrementalDirtyMain {
 
     val priority = Config.priority
     val dataset1 = Config.dataset1
-    val dataset2 = Config.dataset2
     val threshold = Config.threshold
     val groupNum = 1000//Config.pOption
     val millNum = 5//Config.pOption2
 
     // STEP 1. Initialization and read dataset - gt file
     val t0 = System.currentTimeMillis()
-    val eFile1  = Config.mainDir + Config.getsubDir() + Config.dataset1 + "Profiles"
-    val eFile2  = Config.mainDir + Config.getsubDir() + Config.dataset2 + "Profiles"
-    val gtFile = Config.mainDir + Config.getsubDir() + Config.groundtruth + "IdDuplicates"
+    val eFile1  = Config.mainDir + Config.dataset1 + File.separator + Config.dataset1 + "Profiles"
+    val gtFile = Config.mainDir + Config.groundtruth + File.separator + Config.groundtruth + "IdDuplicates"
 
     if (Config.print) {
       println(s"Max memory: ${maxMemory} MB")
       println("File1\t:\t" + eFile1)
-      println("File2\t:\t" + eFile2)
       println("gtFile\t:\t" + gtFile)
     }
 
@@ -284,7 +282,6 @@ object AkkaProgressiveIncrementalDirtyMain {
         case _ => true
       })
       .via(new StoreSeqModelStageWithIncrCount(profiles1.size, 0))
-      .map(matcher)
       .recover {
         case e => { println("BOOOOOOM MATCHER!" + e.getMessage) ; throw e }
       }

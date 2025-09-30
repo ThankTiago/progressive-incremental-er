@@ -39,6 +39,33 @@ class ProgressiveCollectorWithStatistics(t0: Long, t1: Long, dp: AbstractDuplica
     execute(comparisons)
   }
 
+  def executeAndSave(incrIdx: Int, comparisons: List[BaseComparison]) = {
+     //println(s"Increment $increment: size ${comparisons.size}")
+    if (updateIncr) {
+      partIndex += 1
+      if (partIndex % parts == 0)
+        increment += 1
+    }
+    println(s"Saving comparisons_${increment}.txt")
+    val file = new File(s"comparisons_${increment}.txt")
+    val bw = new BufferedWriter(new FileWriter(file))
+
+    for (cmp <- comparisons) {
+      executeCmp(cmp)
+      bw.write(comparisonToString(cmp))
+    }
+
+    if (incremental && !printAll && (updateIncr && partIndex % parts == 0)) {
+      val s = getLast()
+      buffer.addOne(s)
+      println(s)
+    }
+  }
+
+  def comparisonToString(cmp: BaseComparison) = {
+    s"${cmp.e1}\t${cmp.e2}\t${cmp.sim}\n"
+  }
+
   def execute(comparisons: List[BaseComparison]) = {
     //println(s"Increment $increment: size ${comparisons.size}")
     if (updateIncr) {
@@ -144,7 +171,7 @@ class ProgressiveCollectorWithStatistics(t0: Long, t1: Long, dp: AbstractDuplica
       val dt0 = t - t0
       val dt1 = t - t1
       if (oldNum != em) {
-        val s = s"${ecX}\t${nworkers}\t${dt0}\t${dt1}\t${rec}\t${em}\t${duplicates.size}\t${if (Config.filling) 1 else 0}\t${getRecall()}\t${getPrecision()}"
+        val s = s"${ecX}\t${nworkers}\t${dt0}\t${dt1}\t${rec}\t${em}\t${duplicates.size}\t${if (Config.filling) 1 else 0}\t${getPC()}\t${getPrecision()}"
         buffer.addOne(s)
         println(s)
         oldNum = em
